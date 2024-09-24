@@ -34,7 +34,7 @@ These instructions will get you a copy of the project up and running on your loc
    npm run dev
    ```
 
-The application should now be running on `http://localhost:3000`.
+The application should now be running on `http://localhost:5173/`.
 
 ## Usage
 

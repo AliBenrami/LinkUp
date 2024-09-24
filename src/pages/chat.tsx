@@ -82,10 +82,10 @@ function Chat() {
           content: input,
           avatar: userAvatar,
         });
-        setInput("");
       } catch (error) {
         console.error(error);
       }
+      setInput("");
     }
   };
 
