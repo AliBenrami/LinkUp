@@ -1,0 +1,18 @@
+.textbox {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  margin-inline: auto;
+  scrollbar-width: 1;
+}
+
+.sidebar {
+  background-color: black;
+}
+
+.messageSideBar {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  align-items: flex-start;
+}
