@@ -6,8 +6,8 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
-  Drawer,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import Avatar from "@mui/material/Avatar";
 import EmojiPeople from "@mui/icons-material/EmojiPeople";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -19,73 +19,12 @@ interface Message {
   content: string;
   avatar: string;
 }
-
-function DmList({ setUser, user }: { setUser: any; user: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      {/* your friends list */}
-
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        <EmojiPeople></EmojiPeople>
-      </Button>
-      <Settings setUser={setUser} user={user}></Settings>
-
-      {""}
-
-      {["a", "b", "c", "d", "e", "f", "g"].map((x: string) => {
-        return (
-          <Button>
-            <Avatar style={{ margin: "5px" }}>{x}</Avatar>
-          </Button>
-        );
-      })}
-    </div>
-  );
-}
-
-function Settings({ setUser, user }: { setUser: any; user: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{}}>
-      <Button onClick={() => setOpen(!open)}>
-        <SettingsIcon></SettingsIcon>
-      </Button>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <div style={{ margin: "10px", textAlign: "center" }}>username</div>
-        <TextField
-          style={{ margin: "10px" }}
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
-          placeholder="UserName"
-          variant="outlined"
-        ></TextField>
-
-        <List style={{ margin: "5px" }}>
-          <ListItem>
-            <ListItemButton>
-              <ListItemText primary="Settings" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton>
-              <ListItemText primary="Logout" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton>
-              <ListItemText primary="Close" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Dialog>
-    </div>
-  );
+interface UserDM {
+  Firstname: string;
+  Lastname: string;
+  avatar: string;
+  Iteration: number;
+  DMcode: string;
 }
 
 function Chat() {
@@ -94,12 +33,10 @@ function Chat() {
   const [username, setUsername] = useState<string>("");
   const [userAvatar, setUserAvatar] = useState<string>("");
 
-  useEffect(() => {
-    setUsername("User");
-    setUserAvatar(
-      "https://gravatar.com/avatar/2b766de09ffa5221890122dc2300968a?s=400&d=robohash&r=x"
-    );
-    setMessages([
+  const [friends, setFriends] = useState<UserDM[]>([]);
+  const [selected, setSelected] = useState(0);
+  const [messagesls, setmessagesls] = useState([
+    [
       {
         username: "User",
         content: "hello User2",
@@ -111,14 +48,62 @@ function Chat() {
         content: "hello User",
         avatar: userAvatar,
       },
-    ]);
+    ],
+    [
+      {
+        username: "User3",
+        content: "hello User2",
+        avatar: userAvatar,
+      },
+
+      {
+        username: "User4",
+        content: "hello User",
+        avatar: userAvatar,
+      },
+    ],
+  ]);
+
+  useEffect(() => {
+    setUsername("User");
+    setUserAvatar(
+      "https://gravatar.com/avatar/2b766de09ffa5221890122dc2300968a?s=400&d=robohash&r=x"
+    );
+    setMessages(messagesls[0]);
     //currently doing nothing had a backend working but that is scraped now
+    //fetch api/api/messages/{message id}
     fetch("api/api/messages/")
       .then((response) => response.json())
       .then((data) => setMessages(data));
     return () => {
       //clean up
     };
+  }, []);
+
+  useEffect(() => {
+    setFriends([
+      {
+        Firstname: "Ali",
+        Lastname: "Benrami",
+        avatar: "",
+        Iteration: 0,
+        DMcode: "0",
+      },
+      {
+        Firstname: "Nova",
+        Lastname: "bova",
+        avatar: "",
+        Iteration: 1,
+        DMcode: "1",
+      },
+      {
+        Firstname: "rayan",
+        Lastname: "benrami",
+        avatar: "",
+        Iteration: 2,
+        DMcode: "3",
+      },
+    ]);
   }, []);
 
   const handleSendMessage = async () => {
@@ -139,10 +124,151 @@ function Chat() {
       setInput("");
     }
   };
+  const changeDm = (Iteration: number) => {
+    setSelected(Iteration);
+    //fetch message from db
+    let temp = messagesls;
+    temp[selected] = messages;
+    setmessagesls(temp);
+    if (messagesls.length < Iteration + 1) {
+      setMessages([]);
+      return;
+    }
+    setMessages(messagesls[Iteration]);
+  };
+  function MessageSideBar() {
+    return (
+      <div className="messageSideBar">
+        {/* your friends list */}
+        <FriendCodeMenu></FriendCodeMenu>
+        <Settings></Settings>
 
+        {""}
+
+        {friends.map((user) => {
+          let Content = () => {
+            return (
+              <>
+                <Avatar
+                  style={{ margin: "5px", width: "30px", height: "30px" }}
+                >
+                  {user.Firstname[0] + user.Lastname[0]}
+                </Avatar>
+                <>{user.Firstname}</>
+              </>
+            );
+          };
+
+          let color = user.Iteration === selected ? "gray" : "transparent";
+
+          return (
+            <Button
+              onClick={() => {
+                changeDm(user.Iteration);
+              }}
+              style={{ borderRadius: "5px", backgroundColor: color }}
+            >
+              <Content></Content>
+            </Button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function FriendCodeMenu() {
+    const [open, setOpen] = useState(false);
+    const [code, setcode] = useState("");
+
+    let submitFriendCode = () => {
+      //send code to server/backend
+      //add friend to friendlist
+      setOpen(false);
+      setcode("");
+    };
+
+    return (
+      <>
+        {" "}
+        <Button
+          style={{ width: "100%" }}
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <EmojiPeople></EmojiPeople>
+        </Button>
+        {/** end */}
+        <Dialog
+          open={open}
+          onClose={() => {
+            setOpen(!open);
+          }}
+        >
+          {""}
+          <TextField
+            type="outline"
+            label="Friend Code"
+            variant="filled"
+            defaultValue={code}
+            onChange={(e) => {
+              setcode(e.target.value);
+            }}
+          ></TextField>
+          <Button onClick={submitFriendCode}>
+            <AddIcon></AddIcon>
+          </Button>
+        </Dialog>
+      </>
+    );
+  }
+
+  function Settings() {
+    const [open, setOpen] = useState(false);
+    const [localUsername, setlocalUsername] = useState("");
+    return (
+      <div style={{ width: "100%" }}>
+        <Button onClick={() => setOpen(!open)} style={{ width: "100%" }}>
+          <SettingsIcon></SettingsIcon>
+        </Button>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <div style={{ margin: "10px", textAlign: "center" }}>username</div>
+          <TextField
+            style={{ margin: "10px" }}
+            value={localUsername}
+            onChange={(e) => setlocalUsername(e.target.value)}
+            placeholder="UserName"
+            variant="outlined"
+          ></TextField>
+          <Button onClick={() => setUsername(localUsername)}>
+            {" "}
+            apply username{" "}
+          </Button>
+
+          <List style={{ margin: "5px" }}>
+            <ListItem>
+              <ListItemButton>
+                <ListItemText primary="Settings" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton onClick={() => setOpen(false)}>
+                <ListItemText primary="Close" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Dialog>
+      </div>
+    );
+  }
   return (
     <>
-      <DmList setUser={setUsername} user={username}></DmList>
+      <MessageSideBar></MessageSideBar>
 
       <div
         style={{
@@ -191,7 +317,7 @@ function Chat() {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    paddingTop: "15px",
+                    paddingTop: "5px",
                   }}
                 >
                   <div style={{ fontSize: "24px", fontWeight: "bold" }}>
