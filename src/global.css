@@ -1,0 +1,11 @@
+.textbox {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  margin-inline: auto;
+  scrollbar-width: 1;
+}
+
+.sidebar {
+  background-color: black;
+}
