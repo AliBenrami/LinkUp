@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -6,7 +6,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  ListItemButton,
   TextField,
+  ListItemText,
 } from "@mui/material";
 
 export default function UserAuth() {
@@ -62,10 +64,11 @@ export default function UserAuth() {
   };
 
   return (
-    <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Login/Register
-      </Button>
+    <div style={{ width: "100%" }}>
+      <ListItemButton onClick={handleClickOpen}>
+        <ListItemText primary="Login/Register" />
+      </ListItemButton>
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Login/Register</DialogTitle>
         <DialogContent>

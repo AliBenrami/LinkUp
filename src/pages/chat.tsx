@@ -14,6 +14,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "../global.css";
+import UserAuth from "./UserAuth";
 interface Message {
   username: string;
   content: string;
@@ -148,14 +149,14 @@ function Chat() {
         {friends.map((user) => {
           let Content = () => {
             return (
-              <>
+              <div style={{}}>
                 <Avatar
                   style={{ margin: "5px", width: "30px", height: "30px" }}
                 >
                   {user.Firstname[0] + user.Lastname[0]}
                 </Avatar>
-                <>{user.Firstname}</>
-              </>
+                <div>{user.Firstname}</div>
+              </div>
             );
           };
 
@@ -166,7 +167,11 @@ function Chat() {
               onClick={() => {
                 changeDm(user.Iteration);
               }}
-              style={{ borderRadius: "5px", backgroundColor: color }}
+              style={{
+                borderRadius: "5px",
+                backgroundColor: color,
+                width: "100%",
+              }}
             >
               <Content></Content>
             </Button>
@@ -232,7 +237,7 @@ function Chat() {
           <SettingsIcon></SettingsIcon>
         </Button>
         <Dialog open={open} onClose={() => setOpen(false)}>
-          <div style={{ margin: "10px", textAlign: "center" }}>username</div>
+          <div style={{ margin: "10px", textAlign: "center" }}>Settings</div>
           <TextField
             style={{ margin: "10px" }}
             value={localUsername}
@@ -252,9 +257,7 @@ function Chat() {
               </ListItemButton>
             </ListItem>
             <ListItem>
-              <ListItemButton>
-                <ListItemText primary="Logout" />
-              </ListItemButton>
+              <UserAuth></UserAuth>
             </ListItem>
             <ListItem>
               <ListItemButton onClick={() => setOpen(false)}>
