@@ -41,26 +41,26 @@ function Chat() {
       {
         username: "User",
         content: "hello User2",
-        avatar: userAvatar,
+        avatar: "",
       },
 
       {
         username: "User2",
         content: "hello User",
-        avatar: userAvatar,
+        avatar: "",
       },
     ],
     [
       {
         username: "User3",
         content: "hello User2",
-        avatar: userAvatar,
+        avatar: "",
       },
 
       {
         username: "User4",
         content: "hello User",
-        avatar: userAvatar,
+        avatar: "",
       },
     ],
   ]);
@@ -306,15 +306,19 @@ function Chat() {
                 }}
                 key={index}
               >
-                <img
-                  src={message.avatar}
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    borderRadius: "1cm",
-                    border: "1px solid black",
-                  }}
-                ></img>
+                {message.avatar === "" ? (
+                  <Avatar>{message.username[0]}</Avatar>
+                ) : (
+                  <img
+                    src={message.avatar}
+                    style={{
+                      width: "70px",
+                      height: "70px",
+                      borderRadius: "1cm",
+                      border: "1px solid black",
+                    }}
+                  ></img>
+                )}
 
                 <div
                   style={{
